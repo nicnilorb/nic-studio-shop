@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Logo NIC Studio Shop">
+  <defs>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff6a4d"/>
+      <stop offset="1" stop-color="#b00018"/>
+    </linearGradient>
+    <linearGradient id="head" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ff7d5e"/>
+      <stop offset="0.5" stop-color="#e21f2f"/>
+      <stop offset="1" stop-color="#9e0017"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffe8a3"/>
+      <stop offset="0.5" stop-color="#ffc857"/>
+      <stop offset="1" stop-color="#c98a1e"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="42%" r="62%">
+      <stop offset="0" stop-color="#ff3b4e" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#ff3b4e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <circle cx="128" cy="128" r="124" fill="#0a0e17"/>
+  <circle cx="128" cy="128" r="124" fill="none" stroke="url(#ring)" stroke-width="9"/>
+  <circle cx="128" cy="120" r="98" fill="url(#glow)"/>
+
+  <path d="M64 138 L34 148 L64 160 Z" fill="url(#head)" stroke="#6d0010" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M192 138 L222 148 L192 160 Z" fill="url(#head)" stroke="#6d0010" stroke-width="4" stroke-linejoin="round"/>
+
+  <path d="M96 76 C 82 58, 74 38, 78 22 C 92 40, 106 54, 116 62 Z" fill="url(#gold)" stroke="#8a5a10" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M160 76 C 174 58, 182 38, 178 22 C 164 40, 150 54, 140 62 Z" fill="url(#gold)" stroke="#8a5a10" stroke-width="4" stroke-linejoin="round"/>
+
+  <path d="M112 60 L120 40 L128 52 L136 40 L144 60 Z" fill="url(#gold)" stroke="#8a5a10" stroke-width="4" stroke-linejoin="round"/>
+
+  <path d="M128 218 C 96 211, 68 186, 62 148 C 58 118, 70 90, 92 72 C 102 64, 114 60, 128 60 C 142 60, 154 64, 164 72 C 186 90, 198 118, 194 148 C 188 186, 160 211, 128 218 Z"
+        fill="url(#head)" stroke="#6d0010" stroke-width="5" stroke-linejoin="round"/>
+
+  <path d="M88 120 C 102 106, 120 104, 128 114 C 136 104, 154 106, 168 120"
+        fill="none" stroke="#7a0012" stroke-width="8" stroke-linecap="round"/>
+
+  <path d="M94 128 L120 138 L106 150 Z" fill="#ffd166"/>
+  <path d="M162 128 L136 138 L150 150 Z" fill="#ffd166"/>
+  <circle cx="109" cy="139" r="5" fill="#1a0508"/>
+  <circle cx="147" cy="139" r="5" fill="#1a0508"/>
+
+  <path d="M102 160 C 112 152, 144 152, 154 160 C 160 176, 148 194, 128 198 C 108 194, 96 176, 102 160 Z" fill="#8f0016"/>
+  <circle cx="118" cy="170" r="4.5" fill="#3a0009"/>
+  <circle cx="138" cy="170" r="4.5" fill="#3a0009"/>
+
+  <path d="M110 184 C 120 191, 136 191, 146 184" fill="none" stroke="#2a0006" stroke-width="5" stroke-linecap="round"/>
+  <path d="M116 184 L120 195 L124 184 Z" fill="#fff3e0"/>
+  <path d="M132 184 L136 195 L140 184 Z" fill="#fff3e0"/>
+
+  <path d="M96 96 C 104 84, 116 78, 128 78" fill="none" stroke="#ffb3a6" stroke-width="5" stroke-linecap="round" opacity="0.6"/>
+</svg>

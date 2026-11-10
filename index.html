@@ -1,0 +1,1915 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NIC Studio Shop</title>
+<link rel="icon" type="image/svg+xml" href="logo.svg">
+<style>
+  :root{
+    --bg:#0a0c12;
+    --bg2:#0f1220;
+    --panel:#141a27;
+    --panel2:#1b2233;
+    --border:#273046;
+    --text:#eaeefb;
+    --muted:#8b95ad;
+    --red:#ff3b4e;
+    --red2:#ff7a3d;
+    --gold:#ffc857;
+    --green:#3ddc97;
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:'Segoe UI',system-ui,-apple-system,Roboto,sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(900px 600px at 85% -10%, rgba(255,59,78,.18), transparent 60%),
+      radial-gradient(800px 500px at 0% 100%, rgba(255,122,61,.10), transparent 55%),
+      linear-gradient(160deg,var(--bg),var(--bg2));
+    min-height:100vh;
+  }
+  .hidden{display:none !important}
+  button{font-family:inherit;cursor:pointer}
+  input{font-family:inherit}
+
+  /* ---------- LOGIN ---------- */
+  #login-screen{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .login-card{
+    width:100%;
+    max-width:420px;
+    background:linear-gradient(180deg,rgba(27,34,51,.95),rgba(20,26,39,.95));
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:38px 32px;
+    box-shadow:0 30px 80px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.04);
+    position:relative;
+    overflow:hidden;
+    animation:rise .5s ease both;
+  }
+  .login-card::before{
+    content:"";
+    position:absolute;
+    inset:-2px;
+    background:radial-gradient(400px 200px at 50% -20%,rgba(255,59,78,.35),transparent 70%);
+    pointer-events:none;
+  }
+  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  .login-logo{
+    text-align:center;
+  }
+  .login-logo img{
+    display:block;
+    width:92px;
+    height:92px;
+    margin:0 auto;
+    border-radius:50%;
+    filter:drop-shadow(0 0 18px rgba(255,59,78,.55));
+  }
+  .login-card h1{
+    text-align:center;
+    font-size:24px;
+    margin:14px 0 4px;
+    letter-spacing:.5px;
+  }
+  .login-card .sub{
+    text-align:center;
+    color:var(--muted);
+    font-size:14px;
+    margin:0 0 26px;
+  }
+  .field{margin-bottom:14px}
+  .field label{
+    display:block;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    color:var(--muted);
+    margin-bottom:7px;
+    font-weight:600;
+  }
+  .field input{
+    width:100%;
+    padding:14px 16px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:#0c111b;
+    color:var(--text);
+    font-size:15px;
+    outline:none;
+    transition:border-color .2s,box-shadow .2s;
+  }
+  .field input:focus{
+    border-color:var(--red);
+    box-shadow:0 0 0 3px rgba(255,59,78,.16);
+  }
+  .btn-primary{
+    width:100%;
+    padding:15px;
+    margin-top:8px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg,var(--red),var(--red2));
+    color:#fff;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:.4px;
+    box-shadow:0 10px 26px rgba(255,59,78,.32);
+    transition:transform .15s,filter .15s;
+  }
+  .btn-primary:hover{transform:translateY(-1px);filter:brightness(1.06)}
+  .btn-primary:active{transform:translateY(0)}
+  .login-error{
+    color:#ff8a95;
+    font-size:13px;
+    min-height:18px;
+    margin:12px 2px 0;
+  }
+  .login-hint{
+    text-align:center;
+    color:var(--muted);
+    font-size:12px;
+    margin-top:18px;
+    line-height:1.6;
+  }
+
+  /* ---------- APP SHELL ---------- */
+  #app{min-height:100vh;display:flex;flex-direction:column}
+  header{
+    position:sticky;
+    top:0;
+    z-index:20;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    padding:12px 22px;
+    background:rgba(10,12,18,.82);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+    flex-wrap:wrap;
+  }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-weight:800;
+    font-size:18px;
+    letter-spacing:.4px;
+    white-space:nowrap;
+  }
+  .brand .brand-logo{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    flex-shrink:0;
+    filter:drop-shadow(0 0 10px rgba(255,59,78,.55));
+  }
+  .brand small{
+    display:block;
+    font-size:10px;
+    letter-spacing:2px;
+    color:var(--muted);
+    font-weight:600;
+  }
+  .nav{display:flex;gap:6px;margin-left:8px;flex-wrap:wrap}
+  .nav-btn{
+    border:1px solid transparent;
+    background:transparent;
+    color:var(--muted);
+    padding:9px 15px;
+    border-radius:11px;
+    font-size:14px;
+    font-weight:600;
+    transition:.18s;
+  }
+  .nav-btn:hover{color:var(--text);background:rgba(255,255,255,.04)}
+  .nav-btn.active{
+    color:var(--text);
+    background:linear-gradient(180deg,rgba(255,59,78,.18),rgba(255,59,78,.06));
+    border-color:rgba(255,59,78,.4);
+  }
+  .nav-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:18px;
+    height:18px;
+    padding:0 5px;
+    margin-left:5px;
+    border-radius:9px;
+    background:#ff3b4e;
+    color:#fff;
+    font-size:11px;
+    font-weight:800;
+    vertical-align:middle;
+  }
+  .net-badge{
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:var(--muted);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:4px 9px;
+    white-space:nowrap;
+  }
+  .net-badge.online{
+    color:#7ff0bd;
+    border-color:rgba(61,220,151,.45);
+    background:rgba(61,220,151,.1);
+  }
+  .spacer{flex:1}
+  .user-chip{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:6px 8px 6px 6px;
+    border-radius:999px;
+    background:rgba(255,255,255,.04);
+    border:1px solid var(--border);
+    cursor:pointer;
+    transition:.18s;
+  }
+  .user-chip:hover{
+    background:rgba(255,255,255,.08);
+    border-color:rgba(255,59,78,.4);
+  }
+  .avatar{
+    width:36px;height:36px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#2a3450,#1a2133);
+    font-size:15px;font-weight:700;
+    color:#cfd8ee;
+    border:1px solid var(--border);
+  }
+  .avatar.dragon{
+    background:radial-gradient(circle at 30% 25%,#ff6b6b,#c4001d);
+    border-color:rgba(255,120,120,.7);
+    box-shadow:0 0 14px rgba(255,59,78,.6);
+    font-size:19px;
+  }
+  .user-meta{line-height:1.15;padding-right:4px}
+  .user-meta strong{font-size:13px;display:block}
+  .user-meta span{font-size:11px;color:var(--muted)}
+  .btn-ghost{
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--muted);
+    padding:9px 14px;
+    border-radius:11px;
+    font-size:13px;
+    font-weight:600;
+    transition:.18s;
+  }
+  .btn-ghost:hover{color:var(--text);border-color:#3a4664}
+
+  main{
+    width:100%;
+    max-width:1180px;
+    margin:0 auto;
+    padding:26px 22px 60px;
+    flex:1;
+  }
+  .view{animation:fade .3s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .section-head{margin-bottom:18px}
+  .section-head h2{margin:0 0 4px;font-size:22px}
+  .section-head p{margin:0;color:var(--muted);font-size:14px}
+  .section-head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+  .btn-add-product{
+    border:none;
+    background:linear-gradient(135deg,var(--red),var(--red2));
+    color:#fff;
+    font-weight:700;
+    font-size:14px;
+    padding:11px 18px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(255,59,78,.3);
+    transition:transform .15s,filter .15s;
+    white-space:nowrap;
+  }
+  .btn-add-product:hover{transform:translateY(-1px);filter:brightness(1.06)}
+
+  /* ---------- LOJA ---------- */
+  .product-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(230px,1fr));
+    gap:16px;
+  }
+  .product-grid > .empty{grid-column:1/-1}
+  .product{
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    transition:transform .18s,border-color .18s,box-shadow .18s;
+  }
+  .product:hover{
+    transform:translateY(-3px);
+    border-color:rgba(255,59,78,.45);
+    box-shadow:0 16px 36px rgba(0,0,0,.4);
+  }
+  .product-emoji{
+    font-size:40px;
+    width:64px;height:64px;
+    display:flex;align-items:center;justify-content:center;
+    border-radius:14px;
+    background:radial-gradient(circle at 30% 25%,rgba(255,59,78,.22),rgba(255,255,255,.03));
+    border:1px solid var(--border);
+  }
+  .product-img{
+    width:64px;height:64px;
+    border-radius:14px;
+    object-fit:cover;
+    border:1px solid var(--border);
+    display:block;
+  }
+  .product h3{margin:4px 0 0;font-size:16px}
+  .product-desc{margin:0;color:var(--muted);font-size:13px;line-height:1.45;flex:1}
+  .product-actions{display:flex;gap:6px;margin-top:4px}
+  .p-act{
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.04);
+    color:var(--muted);
+    font-size:12px;
+    font-weight:700;
+    padding:7px 10px;
+    border-radius:8px;
+    transition:.15s;
+  }
+  .p-act:hover{color:var(--text);border-color:#3a4664}
+  .p-act.del:hover{color:#ff9aa3;border-color:rgba(255,59,78,.5);background:rgba(255,59,78,.1)}
+  .product-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+  .price{font-size:17px;font-weight:800;color:var(--gold)}
+  .buy{
+    border:none;
+    background:linear-gradient(135deg,var(--red),var(--red2));
+    color:#fff;
+    font-weight:700;
+    font-size:13px;
+    padding:10px 16px;
+    border-radius:10px;
+    box-shadow:0 8px 18px rgba(255,59,78,.28);
+    transition:transform .15s,filter .15s;
+  }
+  .buy:hover{transform:translateY(-1px);filter:brightness(1.07)}
+
+  /* ---------- VENDAS ---------- */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:14px;
+    margin-bottom:22px;
+  }
+  .stat{
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:18px 20px;
+  }
+  .stat span{display:block;color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+  .stat strong{display:block;font-size:28px;margin-top:6px}
+  .stat.gold strong{color:var(--gold)}
+  .stat.green strong{color:var(--green)}
+  .table-wrap{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    overflow:auto;
+  }
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  thead th{
+    text-align:left;
+    padding:14px 16px;
+    color:var(--muted);
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,.02);
+    white-space:nowrap;
+  }
+  tbody td{padding:14px 16px;border-bottom:1px solid rgba(39,48,70,.55)}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:rgba(255,255,255,.02)}
+  .empty{padding:34px !important;text-align:center;color:var(--muted)}
+
+  /* ---------- CHAT ---------- */
+  .chat-layout{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+  .chat-layout.admin{grid-template-columns:290px 1fr}
+  .chat-sidebar{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    padding:16px;
+    max-height:600px;
+    display:flex;
+    flex-direction:column;
+  }
+  .chat-sidebar h3{margin:2px 0 12px;font-size:13px;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+  .sidebar-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .sidebar-head h3{margin:0}
+  .mini-btn{
+    border:1px solid rgba(255,59,78,.45);
+    background:rgba(255,59,78,.12);
+    color:#ffb3bb;
+    font-size:12px;
+    font-weight:700;
+    padding:6px 11px;
+    border-radius:9px;
+    white-space:nowrap;
+    transition:.15s;
+  }
+  .mini-btn:hover{background:rgba(255,59,78,.24);filter:brightness(1.08)}
+  .thread-list{display:flex;flex-direction:column;gap:6px;overflow:auto}
+  .thread{
+    display:flex;align-items:center;gap:10px;
+    padding:10px;
+    border-radius:12px;
+    border:1px solid transparent;
+    background:transparent;
+    color:var(--text);
+    text-align:left;
+    transition:.15s;
+    width:100%;
+  }
+  .thread:hover{background:rgba(255,255,255,.04)}
+  .thread.active{background:rgba(255,59,78,.12);border-color:rgba(255,59,78,.4)}
+  .thread-avatar{
+    width:34px;height:34px;border-radius:50%;
+    flex:none;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#2a3450,#1a2133);
+    border:1px solid var(--border);
+    font-size:12px;font-weight:700;color:#cfd8ee;
+  }
+  .thread-info{min-width:0;display:flex;flex-direction:column;gap:2px}
+  .thread-name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .thread-preview{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .chat-panel{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    display:flex;
+    flex-direction:column;
+    min-height:520px;
+    max-height:600px;
+    overflow:hidden;
+  }
+  .chat-header{padding:16px 20px;border-bottom:1px solid var(--border)}
+  .chat-header h2{margin:0;font-size:17px}
+  .chat-header p{margin:2px 0 0;color:var(--muted);font-size:12px}
+  .chat-messages{
+    flex:1;
+    overflow-y:auto;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .chat-empty{margin:auto;color:var(--muted);text-align:center;font-size:14px}
+  .msg{display:flex;gap:10px;align-items:flex-end;max-width:82%}
+  .msg.mine{align-self:flex-end;flex-direction:row-reverse}
+  .msg-avatar{
+    width:34px;height:34px;border-radius:50%;
+    flex:none;
+    display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(135deg,#2a3450,#1a2133);
+    border:1px solid var(--border);
+    font-size:12px;font-weight:700;color:#cfd8ee;
+  }
+  .msg-avatar.dragon{
+    background:radial-gradient(circle at 30% 25%,#ff6b6b,#c4001d);
+    border-color:rgba(255,120,120,.7);
+    box-shadow:0 0 12px rgba(255,59,78,.5);
+    font-size:18px;
+  }
+  .msg-bubble{
+    background:var(--panel2);
+    border:1px solid var(--border);
+    border-radius:14px 14px 14px 4px;
+    padding:10px 13px;
+    min-width:90px;
+  }
+  .msg.mine .msg-bubble{
+    background:linear-gradient(135deg,rgba(255,59,78,.22),rgba(255,122,61,.14));
+    border-color:rgba(255,59,78,.4);
+    border-radius:14px 14px 4px 14px;
+  }
+  .msg-head{display:flex;gap:10px;justify-content:space-between;align-items:baseline;margin-bottom:3px}
+  .msg-head span{font-size:11px;font-weight:700;color:var(--gold)}
+  .msg.mine .msg-head span{color:#ffb3bb}
+  .msg-head time{font-size:10px;color:var(--muted);white-space:nowrap}
+  .msg-text{font-size:14px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+  .msg-status{margin-top:8px}
+  .status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:11px;
+    font-weight:700;
+    padding:4px 10px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    color:var(--muted);
+    background:rgba(255,255,255,.03);
+  }
+  .status-pill.pending{color:#ffd479;border-color:rgba(255,200,87,.45);background:rgba(255,200,87,.1)}
+  .status-pill.accepted{color:#9fc0ff;border-color:rgba(120,160,255,.45);background:rgba(120,160,255,.12)}
+  .status-pill.declined{color:#ff9aa3;border-color:rgba(255,59,78,.45);background:rgba(255,59,78,.12)}
+  .status-pill.done{color:#7ff0bd;border-color:rgba(61,220,151,.45);background:rgba(61,220,151,.12)}
+  .msg-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+  .act-btn{
+    border:1px solid var(--border);
+    background:rgba(255,255,255,.04);
+    color:var(--text);
+    font-size:12px;
+    font-weight:700;
+    padding:7px 11px;
+    border-radius:9px;
+    transition:.15s;
+  }
+  .act-btn:hover{filter:brightness(1.16)}
+  .act-btn.ok{border-color:rgba(61,220,151,.45);background:rgba(61,220,151,.12);color:#7ff0bd}
+  .act-btn.no{border-color:rgba(255,59,78,.45);background:rgba(255,59,78,.12);color:#ff9aa3}
+  .act-btn.photo{border-color:rgba(255,200,87,.45);background:rgba(255,200,87,.12);color:#ffd479}
+  .msg-img{
+    display:block;
+    max-width:230px;
+    max-height:230px;
+    border-radius:10px;
+    margin:4px 0 2px;
+    border:1px solid var(--border);
+    object-fit:cover;
+  }
+  .pending-image{padding:0 16px}
+  .pending-chip{
+    display:flex;align-items:center;gap:10px;
+    background:rgba(255,255,255,.04);
+    border:1px dashed var(--border);
+    border-radius:12px;
+    padding:8px;
+    margin-bottom:10px;
+  }
+  .pending-chip img{width:44px;height:44px;object-fit:cover;border-radius:8px}
+  .pending-chip span{font-size:12px;color:var(--muted);flex:1}
+  .chat-input-wrap{
+    display:flex;
+    gap:10px;
+    padding:14px 16px;
+    border-top:1px solid var(--border);
+    background:rgba(255,255,255,.02);
+  }
+  .chat-input-wrap.disabled{opacity:.5;pointer-events:none}
+  .icon-btn{
+    flex:none;
+    width:44px;height:44px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:#0c111b;
+    color:var(--text);
+    font-size:18px;
+    display:flex;align-items:center;justify-content:center;
+    transition:.15s;
+  }
+  .icon-btn:hover{border-color:#3a4664;background:#121a29}
+  #chat-input{
+    flex:1;
+    min-width:0;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    background:#0c111b;
+    color:var(--text);
+    font-size:14px;
+    outline:none;
+  }
+  #chat-input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,59,78,.14)}
+  .send-btn{
+    flex:none;
+    border:none;
+    padding:0 20px;
+    border-radius:12px;
+    background:linear-gradient(135deg,var(--red),var(--red2));
+    color:#fff;
+    font-weight:700;
+    font-size:14px;
+    box-shadow:0 8px 18px rgba(255,59,78,.28);
+    transition:filter .15s;
+  }
+  .send-btn:hover{filter:brightness(1.07)}
+
+  /* ---------- DRAGÃO ADMIN ---------- */
+  #dragon-corner{
+    position:fixed;
+    right:18px;
+    bottom:18px;
+    z-index:60;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    user-select:none;
+    animation:float 3.4s ease-in-out infinite;
+  }
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .dragon-badge{
+    width:76px;height:76px;
+    border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    font-size:44px;
+    background:radial-gradient(circle at 32% 26%,#ff7b6b,#b8001c 70%);
+    border:2px solid rgba(255,150,150,.8);
+    box-shadow:0 0 26px rgba(255,59,78,.75),0 10px 30px rgba(0,0,0,.5),inset 0 2px 8px rgba(255,255,255,.35);
+    animation:pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 22px rgba(255,59,78,.6),0 10px 30px rgba(0,0,0,.5),inset 0 2px 8px rgba(255,255,255,.35)}
+    50%{box-shadow:0 0 40px rgba(255,59,78,.95),0 10px 30px rgba(0,0,0,.5),inset 0 2px 8px rgba(255,255,255,.35)}
+  }
+  .dragon-label{
+    font-size:10px;
+    font-weight:800;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+    color:#ffb3bb;
+    background:rgba(10,12,18,.85);
+    border:1px solid rgba(255,59,78,.5);
+    border-radius:999px;
+    padding:4px 10px;
+    white-space:nowrap;
+  }
+
+  /* ---------- MODAL PRODUTO ---------- */
+  .modal{
+    position:fixed;
+    inset:0;
+    z-index:200;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:rgba(4,6,10,.72);
+    backdrop-filter:blur(4px);
+  }
+  .modal-card{
+    width:100%;
+    max-width:460px;
+    background:linear-gradient(180deg,var(--panel2),var(--panel));
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:26px;
+    box-shadow:0 30px 80px rgba(0,0,0,.6);
+    max-height:90vh;
+    overflow:auto;
+    animation:rise .25s ease both;
+  }
+  .modal-card h2{margin:0 0 18px;font-size:20px}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .photo-pick{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:4px}
+  .photo-preview{
+    width:56px;height:56px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;
+    background:#0c111b;
+    overflow:hidden;
+    flex:none;
+  }
+  .photo-preview img{width:100%;height:100%;object-fit:cover}
+  .modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:20px}
+  .sale-thumb{
+    width:26px;height:26px;
+    border-radius:6px;
+    object-fit:cover;
+    vertical-align:middle;
+    border:1px solid var(--border);
+  }
+
+  /* ---------- TOAST ---------- */
+  #toast{
+    position:fixed;
+    left:50%;
+    bottom:26px;
+    transform:translate(-50%,20px);
+    background:rgba(20,26,39,.98);
+    border:1px solid var(--border);
+    border-left:3px solid var(--green);
+    color:var(--text);
+    padding:12px 18px;
+    border-radius:12px;
+    font-size:14px;
+    box-shadow:0 18px 40px rgba(0,0,0,.5);
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+    z-index:100;
+    max-width:90vw;
+  }
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+
+  @media (max-width:860px){
+    .chat-layout.admin{grid-template-columns:1fr}
+    .chat-sidebar{max-height:220px}
+    #dragon-corner{right:12px;bottom:auto;top:82px}
+    .dragon-badge{width:56px;height:56px;font-size:32px}
+    .dragon-label{font-size:8px;padding:3px 7px}
+  }
+  @media (max-width:560px){
+    header{padding:10px 14px;gap:10px}
+    .brand small{display:none}
+    .brand .brand-logo{width:34px;height:34px}
+    main{padding:18px 14px 60px}
+    .nav{order:3;width:100%;margin-left:0}
+    .nav-btn{flex:1;text-align:center;padding:9px 8px}
+    .msg{max-width:92%}
+    .chat-panel{min-height:440px;max-height:70vh}
+  }
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <form class="login-card" id="login-form">
+    <div class="login-logo"><img src="logo.svg" alt="Logotipo NIC Studio Shop"></div>
+    <h1>NIC Studio Shop</h1>
+    <p class="sub">Entre com sua senha para acessar a loja</p>
+
+    <div class="field">
+      <label for="password-input">Senha</label>
+      <input id="password-input" type="password" placeholder="Digite sua senha" autocomplete="current-password" autofocus>
+    </div>
+    <div class="field">
+      <label for="name-input">Seu nome de usuário</label>
+      <input id="name-input" type="text" placeholder="Ex.: Nic (admin ou cliente)" autocomplete="name" maxlength="30">
+    </div>
+
+    <button class="btn-primary" type="submit">Entrar</button>
+    <div class="login-error" id="login-error"></div>
+    <p class="login-hint">Cada senha é uma conta diferente. O admin pode colocar o nome dele aqui.<br>Suas mensagens e compras ficam salvas automaticamente.</p>
+  </form>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <div class="brand">
+      <img class="brand-logo" src="logo.svg" alt="">
+      <span>NIC Studio Shop<small>LOJA ONLINE</small></span>
+    </div>
+    <nav class="nav">
+      <button class="nav-btn active" data-view="loja">🛍️ <span>Loja</span></button>
+      <button class="nav-btn" data-view="mensagens">💬 <span>Mensagens</span><span class="nav-badge hidden" id="msg-badge">0</span></button>
+      <button class="nav-btn" data-view="vendas">📊 <span id="nav-vendas-label">Vendas</span></button>
+    </nav>
+    <span class="net-badge" id="net-status" title="Online = sincronizando entre aparelhos. Local = só neste navegador.">Local</span>
+    <div class="spacer"></div>
+    <div class="user-chip" id="user-chip" title="Clique para mudar seu nome de usuário">
+      <div class="avatar" id="user-avatar">?</div>
+      <div class="user-meta">
+        <strong id="user-name">Cliente</strong>
+        <span id="user-role">Cliente</span>
+      </div>
+    </div>
+    <button class="btn-ghost" id="logout-btn">Sair</button>
+  </header>
+
+  <main>
+    <section class="view" id="view-loja">
+      <div class="section-head">
+        <div class="section-head-row">
+          <div>
+            <h2>Loja</h2>
+            <p>Escolha seu item e finalize a compra. As vendas aparecem salvas.</p>
+          </div>
+          <button class="btn-add-product hidden" id="add-product-btn" type="button">＋ Adicionar produto</button>
+        </div>
+      </div>
+      <div class="product-grid" id="product-grid"></div>
+    </section>
+
+    <section class="view hidden" id="view-mensagens">
+      <div class="section-head">
+        <h2>Mensagens</h2>
+        <p>Converse, envie texto e imagens direto do seu explorador de arquivos.</p>
+      </div>
+      <div class="chat-layout" id="chat-layout">
+        <aside class="chat-sidebar hidden" id="chat-sidebar">
+          <div class="sidebar-head">
+            <h3>Clientes</h3>
+            <button class="mini-btn" id="new-client-btn" type="button">+ Novo</button>
+          </div>
+          <div class="thread-list" id="thread-list"></div>
+        </aside>
+        <div class="chat-panel">
+          <div class="chat-header">
+            <h2 id="chat-title">Mensagens</h2>
+            <p id="chat-sub"></p>
+          </div>
+          <div class="chat-messages" id="chat-messages"></div>
+          <div class="pending-image hidden" id="pending-image"></div>
+          <div class="chat-input-wrap" id="chat-input-wrap">
+            <button class="icon-btn" id="img-btn" type="button" title="Enviar imagem">📎</button>
+            <input id="chat-input" type="text" placeholder="Escreva uma mensagem..." autocomplete="off">
+            <button class="send-btn" id="send-btn" type="button">Enviar</button>
+          </div>
+          <input id="file-input" type="file" accept="image/*" hidden>
+        </div>
+      </div>
+    </section>
+
+    <section class="view hidden" id="view-vendas">
+      <div class="section-head">
+        <h2 id="vendas-title">Vendas</h2>
+        <p id="vendas-sub"></p>
+      </div>
+      <div class="stats">
+        <div class="stat gold"><span>Total</span><strong id="sales-total">R$ 0,00</strong></div>
+        <div class="stat green"><span>Pedidos</span><strong id="sales-count">0</strong></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th id="buyer-th">Cliente</th>
+              <th>Produto</th>
+              <th>Valor</th>
+              <th>Data</th>
+            </tr>
+          </thead>
+          <tbody id="sales-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div id="dragon-corner" class="hidden" title="Conta Admin - abrir mensagens">
+  <div class="dragon-badge">🐲</div>
+  <div class="dragon-label">Conta Admin</div>
+</div>
+
+<div id="product-modal" class="modal hidden">
+  <div class="modal-card">
+    <h2 id="product-modal-title">Novo produto</h2>
+    <form id="product-form">
+      <div class="field">
+        <label for="prod-name">Nome do item</label>
+        <input id="prod-name" type="text" maxlength="60" placeholder="Ex.: Bolo de chocolate" required>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="prod-price">Preço (R$)</label>
+          <input id="prod-price" type="text" inputmode="decimal" placeholder="0,00" required>
+        </div>
+        <div class="field">
+          <label for="prod-emoji">Emoji</label>
+          <input id="prod-emoji" type="text" maxlength="4" placeholder="📦">
+        </div>
+      </div>
+      <div class="field">
+        <label for="prod-desc">Descrição</label>
+        <input id="prod-desc" type="text" maxlength="120" placeholder="Detalhes do item">
+      </div>
+      <div class="field">
+        <label>Foto do produto (opcional)</label>
+        <div class="photo-pick">
+          <div class="photo-preview" id="prod-photo-preview">📦</div>
+          <button class="btn-ghost" id="prod-photo-btn" type="button">Escolher foto</button>
+          <button class="btn-ghost hidden" id="prod-photo-clear" type="button">Remover foto</button>
+        </div>
+        <input id="prod-photo-input" type="file" accept="image/*" hidden>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-ghost" id="product-cancel" type="button">Cancelar</button>
+        <button class="btn-primary" type="submit" style="width:auto;margin:0;padding:12px 24px">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+  const ADMIN_PASSWORD = 'nic123criad';
+  const STORAGE_KEY = 'nicShop_state_v1';
+  const SESSION_KEY = 'nicShop_session_v1';
+  const API_URL = '/api/state';
+  const POLL_MS = 2500;
+  let serverOnline = false;
+  let syncTimer = null;
+  let pendingSync = false;
+  let lastServerSnapshot = '';
+  let pollTimer = null;
+
+  const DEFAULT_PRODUCTS = [
+    { id:'p1', emoji:'🐲', name:'Dragão Vermelho de Colecionador', price:149.90, desc:'Figura lendária com brilho vermelho e asas articuladas.' },
+    { id:'p2', emoji:'🗡️', name:'Espada do Dragão', price:89.90, desc:'Lâmina forjada no fogo, edição limitada da loja.' },
+    { id:'p3', emoji:'🛡️', name:'Escudo de Escamas', price:74.90, desc:'Proteção máxima com escamas resistentes ao calor.' },
+    { id:'p4', emoji:'🔥', name:'Poção de Fogo', price:29.90, desc:'Energia pura em frasco. Manuseie com cuidado.' },
+    { id:'p5', emoji:'👑', name:'Coroa do Mestre', price:199.90, desc:'Para quem comanda a loja e o covil.' },
+    { id:'p6', emoji:'💎', name:'Gema do Dragão', price:59.90, desc:'Pedra rara que brilha no escuro.' }
+  ];
+
+  let state;
+  let session = null;
+  let selectedThread = null;
+  let pendingImage = null;
+  let proofTargetId = null;
+  let editingProductId = null;
+  let productImage = null;
+
+  function uid(){
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  }
+  function money(v){
+    return 'R$ ' + Number(v).toFixed(2).replace('.', ',');
+  }
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function formatTime(ts){
+    const d = new Date(ts);
+    return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' }) + ' ' +
+           d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+  }
+  function initials(name){
+    const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '?';
+    return parts.slice(0, 2).map(function(w){ return w[0]; }).join('').toUpperCase();
+  }
+
+  function normalizeState(s){
+    return {
+      users: (s && s.users) || {},
+      messages: (s && s.messages) || [],
+      sales: (s && s.sales) || [],
+      products: (s && s.products && s.products.length) ? s.products : DEFAULT_PRODUCTS.slice(),
+      adminName: (s && s.adminName) || 'Admin',
+      updatedAt: (s && s.updatedAt) || 0
+    };
+  }
+
+  function hasContent(s){
+    if (!s) return false;
+    return (s.messages && s.messages.length > 0) ||
+           (s.sales && s.sales.length > 0) ||
+           (s.users && Object.keys(s.users).length > 0) ||
+           (s.adminName && s.adminName !== 'Admin') ||
+           (s.products && s.products.length > DEFAULT_PRODUCTS.length);
+  }
+
+  function adminName(){
+    return (state && state.adminName) ? state.adminName : 'Admin';
+  }
+
+  function shouldUseRemote(local, remote){
+    if (!remote) return false;
+    const remoteHas = hasContent(remote);
+    const localHas = hasContent(local);
+    if (remoteHas && !localHas) return true;
+    if (!remoteHas && localHas) return false;
+    return (remote.updatedAt || 0) >= (local.updatedAt || 0);
+  }
+
+  function loadState(){
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) return normalizeState(JSON.parse(raw));
+    } catch (e) {
+      console.warn('Falha ao carregar dados', e);
+    }
+    return normalizeState(null);
+  }
+
+  function saveLocalOnly(){
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.warn('Falha ao salvar dados', e);
+    }
+  }
+
+  function saveState(){
+    state.updatedAt = Date.now();
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) {
+      console.warn('Falha ao salvar dados', e);
+      toast('Armazenamento cheio. Tente imagens menores.');
+    }
+    pushServerState();
+  }
+
+  function setServerOnline(online){
+    serverOnline = online;
+    const el = document.getElementById('net-status');
+    if (!el) return;
+    el.textContent = online ? 'Online' : 'Local';
+    el.classList.toggle('online', online);
+  }
+
+  async function fetchServerState(){
+    const controller = new AbortController();
+    const timer = setTimeout(function(){ controller.abort(); }, 4000);
+    try {
+      const res = await fetch(API_URL, { cache: 'no-store', signal: controller.signal });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const text = await res.text();
+      if (!text || text === 'null') return null;
+      return JSON.parse(text);
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  function pushServerState(){
+    pendingSync = true;
+    clearTimeout(syncTimer);
+    syncTimer = setTimeout(function(){
+      fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(state)
+      }).then(function(res){
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        lastServerSnapshot = JSON.stringify(normalizeState(state));
+        pendingSync = false;
+      }).catch(function(){
+        pendingSync = false;
+        setServerOnline(false);
+      });
+    }, 300);
+  }
+
+  async function syncFromServer(render){
+    if (pendingSync) return false;
+    try {
+      const remote = await fetchServerState();
+      setServerOnline(true);
+      if (!remote) return false;
+      const remoteState = normalizeState(remote);
+      const remoteStr = JSON.stringify(remoteState);
+      if (remoteStr === lastServerSnapshot) return false;
+      if ((remoteState.updatedAt || 0) >= (state.updatedAt || 0)){
+        state = remoteState;
+        lastServerSnapshot = remoteStr;
+        saveLocalOnly();
+        if (session && render !== false) renderAll();
+        return true;
+      }
+      pushServerState();
+      return false;
+    } catch (e) {
+      setServerOnline(false);
+      return false;
+    }
+  }
+
+  function startPolling(){
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(function(){
+      syncFromServer(true);
+    }, POLL_MS);
+  }
+
+  function loadSession(){
+    try {
+      const raw = localStorage.getItem(SESSION_KEY);
+      if (raw) return JSON.parse(raw);
+    } catch (e) { console.warn(e); }
+    return null;
+  }
+
+  function saveSession(){
+    try {
+      if (session) localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      else localStorage.removeItem(SESSION_KEY);
+    } catch (e) { console.warn(e); }
+  }
+
+  let toastTimer = null;
+  function toast(msg){
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2600);
+  }
+
+  function showLoginError(msg){
+    document.getElementById('login-error').textContent = msg;
+  }
+
+  async function login(password, nameInput){
+    password = String(password || '').trim();
+    if (!password){
+      showLoginError('Digite uma senha para entrar.');
+      return;
+    }
+    showLoginError('');
+
+    await syncFromServer(false);
+
+    if (password === ADMIN_PASSWORD){
+      const adminInput = String(nameInput || '').trim();
+      if (adminInput){
+        state.adminName = adminInput;
+        saveState();
+      } else if (!state.adminName){
+        state.adminName = 'Admin';
+      }
+      session = { role:'admin' };
+      saveSession();
+      enterApp();
+      return;
+    }
+
+    if (!state.users[password]){
+      const name = String(nameInput || '').trim() || ('Cliente ' + (Object.keys(state.users).length + 1));
+      state.users[password] = { name: name, createdAt: Date.now() };
+      saveState();
+    }
+
+    session = { role:'user', password: password };
+    saveSession();
+    enterApp();
+  }
+
+  function enterApp(){
+    document.getElementById('login-screen').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('dragon-corner').classList.toggle('hidden', session.role !== 'admin');
+    document.getElementById('password-input').value = '';
+    document.getElementById('name-input').value = '';
+    document.getElementById('login-error').textContent = '';
+
+    selectedThread = (session.role === 'admin') ? (userThreads()[0] || null) : session.password;
+    pendingImage = null;
+    closeProductModal();
+
+    switchView('loja');
+    renderAll();
+  }
+
+  function logout(){
+    saveState();
+    session = null;
+    saveSession();
+    closeProductModal();
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('login-screen').classList.remove('hidden');
+    document.getElementById('dragon-corner').classList.add('hidden');
+    setTimeout(function(){ document.getElementById('password-input').focus(); }, 50);
+  }
+
+  function switchView(view){
+    document.querySelectorAll('.nav-btn').forEach(function(b){
+      b.classList.toggle('active', b.dataset.view === view);
+    });
+    document.querySelectorAll('.view').forEach(function(v){
+      v.classList.toggle('hidden', v.id !== 'view-' + view);
+    });
+    if (view === 'mensagens') renderMessages();
+    if (view === 'vendas') renderSales();
+  }
+
+  function renderAll(){
+    renderSessionUI();
+    renderProducts();
+    renderMessages();
+    renderSales();
+  }
+
+  function renderSessionUI(){
+    const isAdmin = session.role === 'admin';
+    const name = isAdmin ? adminName() : (state.users[session.password] ? state.users[session.password].name : 'Cliente');
+    document.getElementById('user-name').textContent = name;
+    document.getElementById('user-role').textContent = isAdmin ? 'Conta Admin' : 'Cliente';
+    const av = document.getElementById('user-avatar');
+    av.textContent = isAdmin ? '🐲' : initials(name);
+    av.classList.toggle('dragon', isAdmin);
+
+    const badge = document.getElementById('msg-badge');
+    if (badge){
+      const pending = isAdmin
+        ? state.messages.filter(function(m){ return m.sender === 'user' && (m.status || 'pending') === 'pending'; }).length
+        : 0;
+      badge.textContent = pending > 99 ? '99+' : String(pending);
+      badge.classList.toggle('hidden', pending === 0);
+    }
+
+    document.getElementById('nav-vendas-label').textContent = isAdmin ? 'Vendas' : 'Minhas compras';
+    document.getElementById('vendas-title').textContent = isAdmin ? 'Vendas da loja' : 'Minhas compras';
+    document.getElementById('vendas-sub').textContent = isAdmin
+      ? 'Acompanhe todos os pedidos feitos na loja.'
+      : 'Seu histórico de compras salvo automaticamente.';
+    document.getElementById('buyer-th').textContent = isAdmin ? 'Cliente' : 'Comprador';
+    document.getElementById('add-product-btn').classList.toggle('hidden', !isAdmin);
+  }
+
+  /* ---------- PRODUTOS ---------- */
+  function renderProducts(){
+    const grid = document.getElementById('product-grid');
+    const isAdmin = session.role === 'admin';
+    if (!state.products.length){
+      grid.innerHTML = '<div class="empty">Nenhum produto cadastrado ainda.' +
+        (isAdmin ? ' Clique em "＋ Adicionar produto".' : '') + '</div>';
+      return;
+    }
+    grid.innerHTML = state.products.map(function(p){
+      const visual = p.image
+        ? '<img class="product-img" src="' + p.image + '" alt="' + escapeHtml(p.name) + '">'
+        : '<div class="product-emoji">' + (p.emoji || '📦') + '</div>';
+      const actions = isAdmin
+        ? '<div class="product-actions">' +
+            '<button class="p-act" data-edit="' + escapeHtml(p.id) + '" type="button">Editar</button>' +
+            '<button class="p-act del" data-del="' + escapeHtml(p.id) + '" type="button">Excluir</button>' +
+          '</div>'
+        : '';
+      return '<article class="product">' +
+        visual +
+        '<h3>' + escapeHtml(p.name) + '</h3>' +
+        '<p class="product-desc">' + escapeHtml(p.desc || '') + '</p>' +
+        actions +
+        '<div class="product-foot">' +
+          '<span class="price">' + money(p.price) + '</span>' +
+          '<button class="buy" data-id="' + escapeHtml(p.id) + '" type="button">Comprar</button>' +
+        '</div>' +
+      '</article>';
+    }).join('');
+    grid.querySelectorAll('.buy').forEach(function(btn){
+      btn.addEventListener('click', function(){ buyProduct(btn.dataset.id); });
+    });
+    grid.querySelectorAll('[data-edit]').forEach(function(btn){
+      btn.addEventListener('click', function(){ openProductModal(btn.dataset.edit); });
+    });
+    grid.querySelectorAll('[data-del]').forEach(function(btn){
+      btn.addEventListener('click', function(){ deleteProduct(btn.dataset.del); });
+    });
+  }
+
+  function buyProduct(id){
+    const p = state.products.find(function(x){ return x.id === id; });
+    if (!p) return;
+    const isAdmin = session.role === 'admin';
+    const buyer = isAdmin ? adminName() : state.users[session.password].name;
+    const sale = {
+      id: uid(),
+      productId: p.id,
+      product: p.name,
+      emoji: p.emoji || '📦',
+      image: p.image || null,
+      price: p.price,
+      buyer: buyer,
+      thread: isAdmin ? 'admin' : session.password,
+      time: Date.now()
+    };
+    state.sales.push(sale);
+
+    if (!isAdmin){
+      state.messages.push({
+        id: uid(),
+        thread: session.password,
+        sender: 'user',
+        name: buyer,
+        text: '🛒 Quero comprar: ' + (p.emoji || '📦') + ' ' + p.name + ' — ' + money(p.price),
+        image: null,
+        status: 'pending',
+        saleId: sale.id,
+        time: Date.now()
+      });
+    }
+
+    saveState();
+    renderAll();
+    if (isAdmin){
+      toast('Compra registrada: ' + p.name);
+    } else {
+      switchView('mensagens');
+      toast('Pedido enviado para o admin!');
+    }
+  }
+
+  /* ---------- VENDAS ---------- */
+  function renderSales(){
+    const list = session.role === 'admin'
+      ? state.sales.slice()
+      : state.sales.filter(function(s){ return s.thread === session.password; });
+
+    const total = list.reduce(function(a, s){ return a + Number(s.price); }, 0);
+    document.getElementById('sales-total').textContent = money(total);
+    document.getElementById('sales-count').textContent = list.length;
+
+    const body = document.getElementById('sales-body');
+    if (!list.length){
+      body.innerHTML = '<tr><td colspan="4" class="empty">Nenhuma venda ainda.</td></tr>';
+      return;
+    }
+    body.innerHTML = list.slice().sort(function(a, b){ return b.time - a.time; }).map(function(s){
+      const thumb = s.image
+        ? '<img class="sale-thumb" src="' + s.image + '" alt="">'
+        : (s.emoji || '📦');
+      return '<tr>' +
+        '<td>' + escapeHtml(s.buyer) + '</td>' +
+        '<td>' + thumb + ' ' + escapeHtml(s.product) + '</td>' +
+        '<td>' + money(s.price) + '</td>' +
+        '<td>' + formatTime(s.time) + '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  /* ---------- PRODUTOS ADMIN ---------- */
+  function updateProductPreview(){
+    const el = document.getElementById('prod-photo-preview');
+    if (productImage){
+      el.innerHTML = '<img src="' + productImage + '" alt="prévia">';
+      document.getElementById('prod-photo-clear').classList.remove('hidden');
+    } else {
+      const emoji = document.getElementById('prod-emoji').value.trim() || '📦';
+      el.textContent = emoji;
+      document.getElementById('prod-photo-clear').classList.add('hidden');
+    }
+  }
+
+  function openProductModal(id){
+    editingProductId = id || null;
+    const p = id ? state.products.find(function(x){ return x.id === id; }) : null;
+    document.getElementById('product-modal-title').textContent = p ? 'Editar produto' : 'Novo produto';
+    document.getElementById('prod-name').value = p ? p.name : '';
+    document.getElementById('prod-price').value = p ? String(p.price).replace('.', ',') : '';
+    document.getElementById('prod-emoji').value = p ? (p.emoji || '') : '';
+    document.getElementById('prod-desc').value = p ? (p.desc || '') : '';
+    productImage = (p && p.image) ? p.image : null;
+    updateProductPreview();
+    document.getElementById('product-modal').classList.remove('hidden');
+    setTimeout(function(){ document.getElementById('prod-name').focus(); }, 50);
+  }
+
+  function closeProductModal(){
+    document.getElementById('product-modal').classList.add('hidden');
+    editingProductId = null;
+    productImage = null;
+    document.getElementById('product-form').reset();
+    updateProductPreview();
+  }
+
+  function saveProduct(e){
+    e.preventDefault();
+    const wasEditing = !!editingProductId;
+    const name = document.getElementById('prod-name').value.trim();
+    const price = parseFloat(String(document.getElementById('prod-price').value).replace(',', '.'));
+    const emoji = document.getElementById('prod-emoji').value.trim() || '📦';
+    const desc = document.getElementById('prod-desc').value.trim();
+    if (!name){
+      toast('Digite o nome do item.');
+      return;
+    }
+    if (!isFinite(price) || price < 0){
+      toast('Digite um preço válido.');
+      return;
+    }
+
+    if (editingProductId){
+      const p = state.products.find(function(x){ return x.id === editingProductId; });
+      if (p){
+        p.name = name;
+        p.price = price;
+        p.emoji = emoji;
+        p.desc = desc;
+        p.image = productImage || null;
+      }
+    } else {
+      state.products.push({
+        id: 'p' + uid(),
+        name: name,
+        price: price,
+        emoji: emoji,
+        desc: desc,
+        image: productImage || null
+      });
+    }
+
+    saveState();
+    renderProducts();
+    closeProductModal();
+    toast(wasEditing ? 'Produto atualizado!' : 'Produto adicionado!');
+  }
+
+  function deleteProduct(id){
+    const p = state.products.find(function(x){ return x.id === id; });
+    if (!p) return;
+    if (!confirm('Excluir "' + p.name + '"? As vendas antigas continuam salvas.')) return;
+    state.products = state.products.filter(function(x){ return x.id !== id; });
+    saveState();
+    renderProducts();
+    toast('Produto excluído.');
+  }
+
+  /* ---------- MENSAGENS ---------- */
+  function userThreads(){
+    const keys = new Set(Object.keys(state.users));
+    state.messages.forEach(function(m){ keys.add(m.thread); });
+    return Array.from(keys);
+  }
+
+  function messagesOf(thread){
+    return state.messages.filter(function(m){ return m.thread === thread; });
+  }
+
+  function lastMessage(thread){
+    const arr = messagesOf(thread);
+    return arr.length ? arr[arr.length - 1] : null;
+  }
+
+  function renderThreadList(){
+    const container = document.getElementById('thread-list');
+    const threads = userThreads();
+    if (!threads.length){
+      container.innerHTML = '<div class="empty">Nenhum cliente ainda.</div>';
+      return;
+    }
+    threads.sort(function(a, b){
+      const la = lastMessage(a), lb = lastMessage(b);
+      return (lb ? lb.time : 0) - (la ? la.time : 0);
+    });
+    container.innerHTML = threads.map(function(pw){
+      const u = state.users[pw];
+      const name = u ? u.name : 'Cliente';
+      const last = lastMessage(pw);
+      let preview = 'Sem mensagens';
+      if (last){
+        if (last.image && !last.text) preview = '📷 Imagem';
+        else preview = escapeHtml(last.text || '');
+      }
+      const active = pw === selectedThread ? ' active' : '';
+      return '<button class="thread' + active + '" data-pw="' + escapeHtml(pw) + '" type="button">' +
+        '<span class="thread-avatar">' + escapeHtml(initials(name)) + '</span>' +
+        '<span class="thread-info">' +
+          '<span class="thread-name">' + escapeHtml(name) + '</span>' +
+          '<span class="thread-preview">' + preview + '</span>' +
+        '</span>' +
+      '</button>';
+    }).join('');
+
+    container.querySelectorAll('.thread').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        selectedThread = btn.dataset.pw;
+        renderMessages();
+      });
+    });
+  }
+
+  function renderMessages(){
+    const isAdmin = session.role === 'admin';
+    const sidebar = document.getElementById('chat-sidebar');
+    sidebar.classList.toggle('hidden', !isAdmin);
+    document.getElementById('chat-layout').classList.toggle('admin', isAdmin);
+
+    if (isAdmin){
+      if (!selectedThread && userThreads().length) selectedThread = userThreads()[0];
+      renderThreadList();
+    }
+
+    const thread = isAdmin ? selectedThread : session.password;
+    const msgs = thread ? messagesOf(thread) : [];
+    const titleEl = document.getElementById('chat-title');
+    const subEl = document.getElementById('chat-sub');
+
+    if (isAdmin){
+      if (thread){
+        const u = state.users[thread];
+        titleEl.textContent = u ? u.name : 'Cliente';
+        subEl.textContent = 'Conversa do cliente - responda por aqui';
+      } else {
+        titleEl.textContent = 'Mensagens';
+        subEl.textContent = 'Selecione um cliente na lista';
+      }
+    } else {
+      titleEl.textContent = 'Fale com a loja';
+      subEl.textContent = 'Envie mensagens ou imagens para o admin';
+    }
+
+    const box = document.getElementById('chat-messages');
+    if (!msgs.length){
+      if (isAdmin && !thread){
+        box.innerHTML = '<div class="chat-empty">' +
+          '<p>Nenhum cliente ainda.</p>' +
+          '<button class="btn-primary" id="empty-new-client" type="button" style="max-width:240px;margin:10px auto 0;padding:12px 16px;font-size:14px">+ Criar cliente</button>' +
+        '</div>';
+        document.getElementById('empty-new-client').addEventListener('click', createClient);
+      } else {
+        box.innerHTML = '<div class="chat-empty">Nenhuma mensagem ainda. Diga olá! 👋</div>';
+      }
+    } else {
+      const statusLabels = {
+        pending: '⏳ Aguardando resposta',
+        accepted: '🔧 Aceito - em andamento',
+        declined: '❌ Recusado',
+        done: '✅ Pronto para buscar'
+      };
+      box.innerHTML = msgs.map(function(m){
+        const mine = isAdmin ? m.sender === 'admin' : m.sender === 'user';
+        const isDragon = m.sender === 'admin';
+        const avatar = isDragon ? '🐲' : escapeHtml(initials(m.name || 'Cliente'));
+        const img = m.image ? '<img class="msg-img" src="' + m.image + '" alt="imagem enviada">' : '';
+        const txt = m.text ? '<div class="msg-text">' + escapeHtml(m.text) + '</div>' : '';
+        const status = m.status || (m.sender === 'user' ? 'pending' : null);
+        const statusHtml = status
+          ? '<div class="msg-status"><span class="status-pill ' + status + '">' + (statusLabels[status] || status) + '</span></div>'
+          : '';
+        let actionsHtml = '';
+        if (isAdmin && m.sender === 'user'){
+          if (status === 'pending'){
+            actionsHtml = '<div class="msg-actions">' +
+              '<button class="act-btn ok" data-act="accept" data-id="' + m.id + '" type="button">✅ Fazer</button>' +
+              '<button class="act-btn no" data-act="decline" data-id="' + m.id + '" type="button">❌ Não fazer</button>' +
+            '</div>';
+          } else if (status === 'accepted'){
+            actionsHtml = '<div class="msg-actions">' +
+              '<button class="act-btn photo" data-act="proof" data-id="' + m.id + '" type="button">📸 Tirar foto e avisar para buscar</button>' +
+            '</div>';
+          }
+        }
+        return '<div class="msg ' + (mine ? 'mine' : 'theirs') + '">' +
+          '<div class="msg-avatar' + (isDragon ? ' dragon' : '') + '">' + avatar + '</div>' +
+          '<div class="msg-bubble">' +
+            '<div class="msg-head"><span>' + escapeHtml(m.name || '') + '</span><time>' + formatTime(m.time) + '</time></div>' +
+            img + txt + statusHtml + actionsHtml +
+          '</div>' +
+        '</div>';
+      }).join('');
+
+      box.querySelectorAll('[data-act]').forEach(function(btn){
+        btn.addEventListener('click', function(){
+          const id = btn.dataset.id;
+          if (btn.dataset.act === 'accept') acceptRequest(id);
+          else if (btn.dataset.act === 'decline') declineRequest(id);
+          else if (btn.dataset.act === 'proof') startProof(id);
+        });
+      });
+    }
+    box.scrollTop = box.scrollHeight;
+
+    const disabled = isAdmin && !thread;
+    document.getElementById('chat-input-wrap').classList.toggle('disabled', disabled);
+    document.getElementById('chat-input').disabled = disabled;
+    document.getElementById('send-btn').disabled = disabled;
+    document.getElementById('img-btn').disabled = disabled;
+
+    renderPendingImage();
+  }
+
+  function renderPendingImage(){
+    const el = document.getElementById('pending-image');
+    if (!pendingImage){
+      el.classList.add('hidden');
+      el.innerHTML = '';
+      return;
+    }
+    el.classList.remove('hidden');
+    el.innerHTML = '<div class="pending-chip">' +
+      '<img src="' + pendingImage + '" alt="prévia da imagem">' +
+      '<span>Imagem pronta para enviar</span>' +
+      '<button class="icon-btn" id="remove-img" type="button" title="Remover">✕</button>' +
+    '</div>';
+    document.getElementById('remove-img').addEventListener('click', function(){
+      pendingImage = null;
+      renderPendingImage();
+    });
+  }
+
+  function fileToDataURL(file, maxSize){
+    maxSize = maxSize || 800;
+    return new Promise(function(resolve, reject){
+      const reader = new FileReader();
+      reader.onload = function(e){
+        const img = new Image();
+        img.onload = function(){
+          let w = img.width, h = img.height;
+          if (w > maxSize || h > maxSize){
+            const scale = Math.min(maxSize / w, maxSize / h);
+            w = Math.round(w * scale);
+            h = Math.round(h * scale);
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve(canvas.toDataURL('image/jpeg', 0.78));
+        };
+        img.onerror = function(){ reject(new Error('Imagem inválida')); };
+        img.src = e.target.result;
+      };
+      reader.onerror = function(){ reject(new Error('Falha ao ler arquivo')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function sendMessage(){
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text && !pendingImage) return;
+
+    const isAdmin = session.role === 'admin';
+    const thread = isAdmin ? selectedThread : session.password;
+    if (!thread){
+      toast('Selecione um cliente primeiro.');
+      return;
+    }
+
+    const name = isAdmin ? adminName() : state.users[session.password].name;
+    state.messages.push({
+      id: uid(),
+      thread: thread,
+      sender: isAdmin ? 'admin' : 'user',
+      name: name,
+      text: text,
+      image: pendingImage || null,
+      time: Date.now()
+    });
+
+    input.value = '';
+    pendingImage = null;
+    saveState();
+    renderMessages();
+  }
+
+  /* ---------- PEDIDOS ---------- */
+  function findMessage(id){
+    return state.messages.find(function(m){ return m.id === id; });
+  }
+
+  function acceptRequest(id){
+    const m = findMessage(id);
+    if (!m || m.sender !== 'user') return;
+    m.status = 'accepted';
+    state.messages.push({
+      id: uid(),
+      thread: m.thread,
+      sender: 'admin',
+      name: adminName(),
+      text: '✅ Vou fazer! Quando estiver pronto eu aviso para buscar.',
+      image: null,
+      time: Date.now()
+    });
+    saveState();
+    renderMessages();
+    toast('Pedido aceito. O cliente foi avisado.');
+  }
+
+  function declineRequest(id){
+    const m = findMessage(id);
+    if (!m || m.sender !== 'user') return;
+    m.status = 'declined';
+    state.messages.push({
+      id: uid(),
+      thread: m.thread,
+      sender: 'admin',
+      name: adminName(),
+      text: '❌ Não vou conseguir fazer esse pedido.',
+      image: null,
+      time: Date.now()
+    });
+    saveState();
+    renderMessages();
+    toast('Pedido recusado.');
+  }
+
+  function startProof(id){
+    const m = findMessage(id);
+    if (!m) return;
+    proofTargetId = id;
+    document.getElementById('file-input').click();
+  }
+
+  function finishProof(id, dataURL){
+    const m = findMessage(id);
+    if (!m) return;
+    m.status = 'done';
+    m.proof = dataURL;
+    m.proofTime = Date.now();
+    state.messages.push({
+      id: uid(),
+      thread: m.thread,
+      sender: 'admin',
+      name: adminName(),
+      text: '✅ Pronto! Pode buscar.',
+      image: dataURL,
+      time: Date.now()
+    });
+    proofTargetId = null;
+    saveState();
+    renderMessages();
+    toast('Foto enviada! O cliente foi avisado para buscar.');
+  }
+
+  function createClient(){
+    const name = prompt('Nome do cliente:');
+    if (name === null) return;
+    const cleanName = name.trim();
+    if (!cleanName){
+      toast('Digite um nome para o cliente.');
+      return;
+    }
+    const pw = prompt('Senha do cliente (ele usará essa senha para entrar):');
+    if (pw === null) return;
+    const password = pw.trim();
+    if (!password){
+      toast('Digite uma senha para o cliente.');
+      return;
+    }
+    if (password === ADMIN_PASSWORD){
+      toast('Essa senha é do admin. Escolha outra.');
+      return;
+    }
+    if (!state.users[password]){
+      state.users[password] = { name: cleanName, createdAt: Date.now() };
+    } else if (!state.users[password].name){
+      state.users[password].name = cleanName;
+    }
+    saveState();
+    selectedThread = password;
+    renderMessages();
+    toast('Cliente criado. Você já pode escrever.');
+  }
+
+  /* ---------- EVENTOS ---------- */
+  document.getElementById('login-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    login(
+      document.getElementById('password-input').value,
+      document.getElementById('name-input').value
+    );
+  });
+
+  document.querySelectorAll('.nav-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){ switchView(btn.dataset.view); });
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', logout);
+
+  document.getElementById('user-chip').addEventListener('click', function(){
+    if (!session) return;
+    const isAdmin = session.role === 'admin';
+    const current = isAdmin
+      ? adminName()
+      : (state.users[session.password] ? state.users[session.password].name : '');
+    const name = prompt('Seu nome de usuário na loja:', current);
+    if (name === null) return;
+    const clean = name.trim();
+    if (!clean){
+      toast('Digite um nome.');
+      return;
+    }
+    if (isAdmin) state.adminName = clean;
+    else if (state.users[session.password]) state.users[session.password].name = clean;
+    saveState();
+    renderAll();
+    toast('Nome atualizado: ' + clean);
+  });
+
+  document.getElementById('send-btn').addEventListener('click', sendMessage);
+
+  document.getElementById('chat-input').addEventListener('keydown', function(e){
+    if (e.key === 'Enter' && !e.shiftKey){
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  document.getElementById('img-btn').addEventListener('click', function(){
+    proofTargetId = null;
+    document.getElementById('file-input').click();
+  });
+
+  document.getElementById('new-client-btn').addEventListener('click', createClient);
+
+  document.getElementById('add-product-btn').addEventListener('click', function(){ openProductModal(null); });
+  document.getElementById('product-form').addEventListener('submit', saveProduct);
+  document.getElementById('product-cancel').addEventListener('click', closeProductModal);
+  document.getElementById('product-modal').addEventListener('click', function(e){
+    if (e.target.id === 'product-modal') closeProductModal();
+  });
+  document.getElementById('prod-photo-btn').addEventListener('click', function(){
+    document.getElementById('prod-photo-input').click();
+  });
+  document.getElementById('prod-photo-input').addEventListener('change', function(e){
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    fileToDataURL(file).then(function(data){
+      productImage = data;
+      updateProductPreview();
+    }).catch(function(err){
+      console.warn(err);
+      toast('Não foi possível carregar a foto.');
+    });
+    e.target.value = '';
+  });
+  document.getElementById('prod-photo-clear').addEventListener('click', function(){
+    productImage = null;
+    updateProductPreview();
+  });
+  document.getElementById('prod-emoji').addEventListener('input', function(){
+    if (!productImage) updateProductPreview();
+  });
+
+  document.getElementById('file-input').addEventListener('change', function(e){
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const proofId = proofTargetId;
+    fileToDataURL(file).then(function(data){
+      if (proofId){
+        finishProof(proofId, data);
+      } else {
+        pendingImage = data;
+        renderPendingImage();
+      }
+    }).catch(function(err){
+      console.warn(err);
+      proofTargetId = null;
+      toast('Não foi possível carregar a imagem.');
+    });
+    e.target.value = '';
+  });
+
+  document.getElementById('dragon-corner').addEventListener('click', function(){
+    if (session && session.role === 'admin') switchView('mensagens');
+  });
+
+  window.addEventListener('beforeunload', function(){
+    saveState();
+    saveSession();
+    if (serverOnline && navigator.sendBeacon){
+      try {
+        navigator.sendBeacon(API_URL, new Blob([JSON.stringify(state)], { type: 'application/json' }));
+      } catch (e) {}
+    }
+  });
+
+  document.addEventListener('visibilitychange', function(){
+    if (document.visibilityState === 'hidden'){
+      saveState();
+      saveSession();
+    }
+  });
+
+  async function initApp(){
+    const local = loadState();
+    let remote = null;
+    try {
+      remote = await fetchServerState();
+      setServerOnline(true);
+    } catch (e) {
+      setServerOnline(false);
+    }
+
+    if (shouldUseRemote(local, remote)){
+      state = normalizeState(remote);
+      lastServerSnapshot = JSON.stringify(state);
+      saveLocalOnly();
+    } else {
+      state = local;
+      if (serverOnline && hasContent(local)){
+        state.updatedAt = Date.now();
+        saveLocalOnly();
+        pushServerState();
+      }
+    }
+
+    const savedSession = loadSession();
+    if (savedSession && (savedSession.role === 'admin' || (savedSession.role === 'user' && savedSession.password))){
+      session = savedSession;
+      if (session.role === 'user' && !state.users[session.password]){
+        state.users[session.password] = { name: 'Cliente', createdAt: Date.now() };
+        saveState();
+      }
+      enterApp();
+    }
+
+    startPolling();
+  }
+
+  initApp();
+</script>
+</body>
+</html>
